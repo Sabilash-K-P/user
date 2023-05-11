@@ -30,6 +30,7 @@ public class CustomerService {
 		if(validateMail(mailString)) {
 			if(validateUser(mailString))
 			{
+				customer.setPassword(EncryptionDecryptionService.encrypt(customer.getPassword()));
 				customerRepository.save(customer);
 				//return new ResponseEntity<String>("Successfully registered",HttpStatus.CREATED);
 				//return "Successfully Registered";
@@ -50,7 +51,7 @@ public class CustomerService {
 				// Login functionality
 				Optional<Customer> existingUser = customerRepository.findById(mailString);
 				Customer existCustomer = existingUser.get();
-				String savedPassString = existCustomer.getPassword();
+				String savedPassString = EncryptionDecryptionService.decrypt(existCustomer.getPassword());
 				if(passString.equals(savedPassString)) {
 					// Login
 					return generateToken(existCustomer);
